@@ -4,10 +4,8 @@
 
 **VOICE-FIRST · WINDOWS DESKTOP ASSISTANT**
 
-A JARVIS-style HUD with a cloud LLM brain and real OS actions.
+Type, talk, or send a command from your phone. RAGVA pairs a cloud LLM brain with real OS actions, a pywebview HUD, edge-tts voice, and 17 skills.
 
-type · talk · or command it from your phone · 17 skills · Groq tool-calling
-
-Python 3.10+ · Groq tool-calling · pywebview HUD · edge-tts voice · 17 skills
+Built with Python 3.10+ and Groq tool-calling.
 
 [Download the source PDF](assets/banner.pdf) · [Main README](README.md)

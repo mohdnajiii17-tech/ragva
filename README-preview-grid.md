@@ -28,16 +28,6 @@ RAGVA        reply → HUD log + edge-tts voice
 
 **max 5 tool hops per turn · one request at a time**
 
-## Skills
-
-`skills.py` · **17 tools** · schema in `TOOLS` · callable in `_DISPATCH`
-
-| Category | Tools |
-|---|---|
-| Apps & web | `open_app`, `open_website`, `browse_webpage`, `web_search` |
-| System | `lock_pc`, `run_command`, `get_battery`, `media_control` |
-| Info | `get_time`, `get_weather` |
-| Files | `open_path`, `list_folder`, `search_files` |
-| Notes & calendar | `take_note`, `read_notes`, `get_calendar_events`, `add_calendar_event` |
+The grid shows **17 tools** defined in `skills.py` (`TOOLS` schemas and `_DISPATCH`). See the [tool list in the main README](README.md#features).
 
 [Download the source PDF](assets/preview-grid.pdf) · [Main README](README.md)

@@ -12,14 +12,12 @@
 
 [![RAGVA interface preview grid](assets/previews/preview-grid.png)](README-preview-grid.md)
 
-[Banner](README-banner.md) · [Thumbnail](README-thumbnail.md) · [Preview grid](README-preview-grid.md)
-
 ## Features
 
 - **Four-state HUD** — idle, listening, thinking, and speaking, with state-reactive color and a 3D neural core.
 - **Real OS actions** — 17 mapped skills covering apps, files, notes, calendar, weather, media, and Windows controls.
 - **Voice and text** — push-to-talk microphone input, typed input, and Edge TTS spoken replies.
-- **Optional phone control** — a disabled-by-default LAN endpoint for sending commands from another device.
+- **Optional phone control** — a disabled-by-default local endpoint for sending commands from another device.
 - **Bounded tool loop** — up to five tool hops per request, one request at a time.
 
 | Category | Tools |
@@ -72,23 +70,23 @@ Voice, wake-word, history, and threshold settings are documented inline in `conf
 
 ```text
 ragva/
-├── README.md             # main overview
-├── README-banner.md      # banner concept sheet
-├── README-thumbnail.md   # thumbnail concept sheet
+├── README.md               # main overview
+├── README-banner.md        # banner concept sheet
+├── README-thumbnail.md     # thumbnail concept sheet
 ├── README-preview-grid.md  # preview-grid concept sheet
-├── ragva.py          # entry point and request routing
-├── brain.py          # Groq tool-calling loop and conversation history
-├── skills.py         # tool schemas and implementations
-├── audio_io.py       # speech recognition and text-to-speech
-├── gui_web.py        # pywebview window and JS bridge
-├── hud.html          # HUD markup, styling, and 3D scene
-├── phone_server.py   # optional phone control endpoint
-├── launcher.py       # optional wake-phrase listener
-├── config.py         # settings and environment-based secrets
+├── ragva.py                # entry point and request routing
+├── brain.py                # Groq tool-calling loop and history
+├── skills.py               # tool schemas and implementations
+├── audio_io.py             # speech recognition and text-to-speech
+├── gui_web.py              # pywebview window and JS bridge
+├── hud.html                # HUD markup and 3D scene
+├── phone_server.py         # optional phone control endpoint
+├── launcher.py             # optional wake-phrase listener
+├── config.py               # settings and environment-based secrets
 ├── requirements.txt
-├── assets/           # concept-sheet PDFs and rendered PNG previews
-│   └── previews/     # images embedded in the README
-└── docs/             # architecture and security notes
+├── assets/                 # concept-sheet PDFs and PNG previews
+│   └── previews/           # images embedded in the READMEs
+└── docs/                   # architecture and security notes
 ```
 
 ## Security
@@ -98,4 +96,3 @@ This is a prototype, not a hardened product. Read [`docs/ARCHITECTURE.md`](docs/
 ## Documentation
 
 - [Architecture, limitations, and security notes](docs/ARCHITECTURE.md)
-- [Banner](README-banner.md) · [Thumbnail](README-thumbnail.md) · [Preview grid](README-preview-grid.md)

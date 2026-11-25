@@ -2,13 +2,13 @@
 
 **A voice-and-text desktop assistant for everyday computer tasks.** RAGVA connects a small HUD to a cloud language model, a set of Python skills, and speech input/output. Ask in plain language; RAGVA can call a mapped tool, show the response, and speak it back.
 
-> **Prototype status:** This document began as an architecture review of a `CONTEXT.md` snapshot (2026-11-24) and has been updated to match the source in this repository. The prototype is a **Windows desktop app**; a browser extension and a standalone web client are **future product directions**, not implemented features.
+> **Prototype status:** This repository contains a **Windows desktop app**. A browser extension and a standalone web client are **future product directions**, not implemented features.
 
 ---
 
 ## Track framing: Beyond the Browser
 
-The supplied CodeRIT event page describes a challenge around the friction of navigating sites, finding relevant information, comparing options, and finishing online tasks—and calls for browser-based agents that make the web smoother and more accessible. RAGVA is presented in that track as an early direction toward reducing multi-step task friction. **The supplied implementation is not a browser agent:** it is a Windows desktop assistant. Browser-page actions, a browser extension, and a web client are future work and must not be presented as implemented.
+The CodeRIT brief frames a challenge around the friction of navigating sites, finding information, comparing options, and finishing online tasks. RAGVA approaches that problem from the desktop: **it is not a browser agent**. Browser-page actions, an extension, and a web client are future work and must not be presented as implemented.
 
 ## At a glance
 
@@ -21,7 +21,7 @@ The supplied CodeRIT event page describes a challenge around the friction of nav
 | Voice | Google Web Speech recognition through SpeechRecognition; Edge TTS spoken output by default |
 | Persistence | Conversation history in process memory; notes appended to `notes.txt` |
 | Offline mode | None: reasoning and several voice/UI dependencies require internet |
-| Browser extension / web app | Not present in the supplied prototype; roadmap only |
+| Browser extension / web app | Not implemented; roadmap only |
 
 This is an early personal-assistant prototype, **not a hardened security product**. Review the security and privacy notes before running it.
 
@@ -60,7 +60,7 @@ The phone-control path is separate: `phone_server.py` accepts a LAN HTTP request
 
 ## What the prototype can do
 
-The prototype context documents **17** tools, each requiring a schema in `TOOLS` and a corresponding function in `_DISPATCH` in `skills.py`:
+The prototype provides **17** tools, each with a schema in `TOOLS` and a function in `_DISPATCH` in `skills.py`:
 
 | Tool | Capability |
 |---|---|
@@ -72,7 +72,7 @@ The prototype context documents **17** tools, each requiring a schema in `TOOLS`
 | `take_note`, `read_notes` | Append to and read the local `notes.txt` file |
 | `get_battery` | Report battery status where supported |
 | `run_command` | Run a shell command with a 30-second timeout (high risk; see below) |
-| `web_search` | Search using `ddgs` (documented dependency is missing in the supplied environment) |
+| `web_search` | Search using `ddgs` (requires the optional `ddgs` package) |
 | `browse_webpage` | Fetch a web page and extract text |
 | `get_calendar_events`, `add_calendar_event` | Read/create Outlook appointments through COM |
 | `media_control` | Send Windows media-key events |
@@ -99,7 +99,7 @@ The browser-extension and web-app directions should carry the same state palette
 
 ## Setup and running (Windows)
 
-The supplied snapshot was tested on Windows with Python 3.14.7. It reports Python 3.10+ in its setup notes; GUI, audio and native dependencies may behave differently across Python and Windows versions. WebView2 Runtime and a working microphone/speaker are needed for the corresponding features.
+The prototype was tested on Windows with Python 3.14.7; setup notes specify Python 3.10+. GUI, audio and native dependencies may behave differently across Python and Windows versions. WebView2 Runtime and a working microphone/speaker are needed for the corresponding features.
 
 1. Clone this repository to your Windows machine.
 2. Create and activate a virtual environment.
@@ -139,7 +139,7 @@ Configuration is described in `config.py`. Important settings include `GROQ_MODE
 | Windows APIs / filesystem | Launch, lock, media, files, notes | Acts with the current user's Windows permissions |
 | HUD CDNs | Tailwind, Three.js and Google Fonts | Assets load from external CDNs; styling/3D may fail offline |
 
-Conversation history is kept in memory and trimmed by message count in the supplied code description. `notes.txt` persists locally. The prototype does not provide a complete privacy dashboard, secure audit log, or a documented encrypted store. Treat model replies and retrieved page content as untrusted.
+Conversation history is kept in memory and trimmed by message count. `notes.txt` persists locally. The prototype does not provide a privacy dashboard, secure audit log, or encrypted store. Treat model replies and retrieved page content as untrusted.
 
 ## Security: read before use
 
@@ -150,12 +150,12 @@ The architecture review identifies important risks in this prototype:
 3. **Unauthenticated LAN endpoint:** the optional Flask endpoint has no authentication, TLS or rate limiting. It is disabled by default and binds to `127.0.0.1`; do not expose it to a LAN until authentication and network controls are added.
 4. **Prompt injection:** fetched web content can influence the model's tool context. A prompt instruction is not a security boundary. Keep untrusted content away from privileged actions and require confirmation.
 5. **Broad local access:** file tools and Outlook COM run in the user's security context. Constrain accessible paths and actions.
-6. **Unsafe HUD rendering:** the snapshot reports model text inserted through `innerHTML` without escaping. Render untrusted content as text (`textContent`) and sanitize any intentional markup.
+6. **Unsafe HUD rendering:** model text is inserted into the log through `innerHTML` without escaping. Render untrusted content as text (`textContent`) and sanitize any intentional markup.
 7. **Privacy disclosure:** prompts and transcripts go to cloud services; speech is sent to Google; default speech synthesis uses Microsoft's service. Disclose this and provide an explicit user choice before recording or transmission.
 
 **Do not expose RAGVA to a network or use it with sensitive data until these issues have been addressed and tested.** This document is not a security audit or a certification.
 
-## Limitations documented in the supplied snapshot
+## Known limitations
 
 - Windows-only native actions and pywebview shell; no browser extension or web client yet.
 - No local language model or offline reasoning path.
@@ -166,7 +166,7 @@ The architecture review identifies important risks in this prototype:
 - HUD settings controls are described as decorative/unwired; one voice-simulation hint points to an undefined function.
 - Web assets are CDN-dependent; early UI updates can be lost while the page is loading.
 - Phone, voice, and GUI requests use threads; the reasoning lock serializes Groq turns and there is no request cancellation.
-- No automated tests, CI, packaging metadata or structured persistent logs were present in the described folder snapshot.
+- No automated tests, CI, packaging metadata or structured persistent logs are configured.
 
 ## Roadmap: product direction, not current implementation
 
@@ -204,4 +204,4 @@ Prefer argument arrays over shell strings, path allowlists over broad filesystem
 
 ## License and project metadata
 
-The supplied context did not specify a license, repository URL, maintainers, or an official track/team identifier. Add those from authoritative project sources before publishing; none are inferred here.
+No license, maintainers, or official track/team identifier have been published. Add them from authoritative sources before release; none are inferred here.
