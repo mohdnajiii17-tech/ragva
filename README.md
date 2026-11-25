@@ -8,11 +8,11 @@
 
 | Banner | Thumbnail |
 |---|---|
-| [![RAGVA banner](assets/previews/banner.png)](docs/concepts/banner.md) | [![RAGVA thumbnail](assets/previews/thumbnail.png)](docs/concepts/thumbnail.md) |
+| [![RAGVA banner](assets/previews/banner.png)](README-banner.md) | [![RAGVA thumbnail](assets/previews/thumbnail.png)](README-thumbnail.md) |
 
-[![RAGVA interface preview grid](assets/previews/preview-grid.png)](docs/concepts/preview-grid.md)
+[![RAGVA interface preview grid](assets/previews/preview-grid.png)](README-preview-grid.md)
 
-[Banner](docs/concepts/banner.md) · [Thumbnail](docs/concepts/thumbnail.md) · [Preview grid](docs/concepts/preview-grid.md)
+[Banner](README-banner.md) · [Thumbnail](README-thumbnail.md) · [Preview grid](README-preview-grid.md)
 
 ## Features
 
@@ -72,6 +72,10 @@ Voice, wake-word, history, and threshold settings are documented inline in `conf
 
 ```text
 ragva/
+├── README.md             # main overview
+├── README-banner.md      # banner concept sheet
+├── README-thumbnail.md   # thumbnail concept sheet
+├── README-preview-grid.md  # preview-grid concept sheet
 ├── ragva.py          # entry point and request routing
 ├── brain.py          # Groq tool-calling loop and conversation history
 ├── skills.py         # tool schemas and implementations
@@ -84,7 +88,7 @@ ragva/
 ├── requirements.txt
 ├── assets/           # concept-sheet PDFs and rendered PNG previews
 │   └── previews/     # images embedded in the README
-└── docs/             # architecture notes and per-sheet concept pages
+└── docs/             # architecture and security notes
 ```
 
 ## Security
@@ -94,4 +98,4 @@ This is a prototype, not a hardened product. Read [`docs/ARCHITECTURE.md`](docs/
 ## Documentation
 
 - [Architecture, limitations, and security notes](docs/ARCHITECTURE.md)
-- [Banner](docs/concepts/banner.md) · [Thumbnail](docs/concepts/thumbnail.md) · [Preview grid](docs/concepts/preview-grid.md)
+- [Banner](README-banner.md) · [Thumbnail](README-thumbnail.md) · [Preview grid](README-preview-grid.md)

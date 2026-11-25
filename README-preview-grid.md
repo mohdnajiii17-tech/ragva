@@ -1,6 +1,6 @@
-# Preview grid
+# RAGVA — Preview grid
 
-![RAGVA interface preview grid](../../assets/previews/preview-grid.png)
+![RAGVA interface preview grid](assets/previews/preview-grid.png)
 
 > Interface preview · stylized mockup, not a live screenshot.
 
@@ -40,4 +40,4 @@ RAGVA        reply → HUD log + edge-tts voice
 | Files | `open_path`, `list_folder`, `search_files` |
 | Notes & calendar | `take_note`, `read_notes`, `get_calendar_events`, `add_calendar_event` |
 
-[Download the source PDF](../../assets/preview-grid.pdf) · [Back to README](../../README.md)
+[Download the source PDF](assets/preview-grid.pdf) · [Main README](README.md)
