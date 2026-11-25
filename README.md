@@ -2,7 +2,17 @@
 
 **A voice-first, Windows desktop assistant.** Type a command, press the mic, or send one from your phone. RAGVA routes the request through Groq tool-calling, runs mapped Python skills, shows the result in a HUD, and speaks it back.
 
-> The interface previews in [`assets/`](assets/) are stylized concept sheets, not live screenshots.
+## Concept sheets
+
+> Stylized concept sheets, not live screenshots. Click an image to open its full page.
+
+| Banner | Thumbnail |
+|---|---|
+| [![RAGVA banner](assets/previews/banner.png)](docs/concepts/banner.md) | [![RAGVA thumbnail](assets/previews/thumbnail.png)](docs/concepts/thumbnail.md) |
+
+[![RAGVA interface preview grid](assets/previews/preview-grid.png)](docs/concepts/preview-grid.md)
+
+[Banner](docs/concepts/banner.md) · [Thumbnail](docs/concepts/thumbnail.md) · [Preview grid](docs/concepts/preview-grid.md)
 
 ## Features
 
@@ -72,20 +82,16 @@ ragva/
 ├── launcher.py       # optional wake-phrase listener
 ├── config.py         # settings and environment-based secrets
 ├── requirements.txt
-├── assets/           # banner, thumbnail, and preview-grid concept sheets
-└── docs/             # detailed architecture and security notes
+├── assets/           # concept-sheet PDFs and rendered PNG previews
+│   └── previews/     # images embedded in the README
+└── docs/             # architecture notes and per-sheet concept pages
 ```
 
 ## Security
 
 This is a prototype, not a hardened product. Read [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) before running it. In particular, `run_command` executes shell commands with your privileges, voice and reply text are sent to third-party services, and the phone endpoint must stay disabled or be explicitly secured before it is exposed on a network.
 
-## Concept sheets
-
-- [Banner](assets/banner.pdf)
-- [Thumbnail](assets/thumbnail.pdf)
-- [Preview grid](assets/preview-grid.pdf)
-
 ## Documentation
 
 - [Architecture, limitations, and security notes](docs/ARCHITECTURE.md)
+- [Banner](docs/concepts/banner.md) · [Thumbnail](docs/concepts/thumbnail.md) · [Preview grid](docs/concepts/preview-grid.md)
