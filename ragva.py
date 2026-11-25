@@ -1,6 +1,6 @@
 """
-JARVIS - Personal AI Assistant
-==============================
+RAGVA - Voice-first desktop assistant
+=====================================
 Run this file to start RAGVA. It will:
   - Open a small on-screen HUD you can type into
   - Speak every reply out loud through your speakers
@@ -109,7 +109,10 @@ def main():
     threading.Thread(target=voice_thread_target, daemon=True).start()
 
     if getattr(config, "ENABLE_PHONE_SERVER", True):
-        phone_server.start_in_background(port=getattr(config, "PHONE_SERVER_PORT", 5005))
+        phone_server.start_in_background(
+            host=getattr(config, "PHONE_SERVER_HOST", "127.0.0.1"),
+            port=getattr(config, "PHONE_SERVER_PORT", 5005),
+        )
 
     gui.run()
 

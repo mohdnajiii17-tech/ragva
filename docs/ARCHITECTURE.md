@@ -1,8 +1,8 @@
-# RAGVA
+# RAGVA — Architecture and Security Notes
 
 **A voice-and-text desktop assistant for everyday computer tasks.** RAGVA connects a small HUD to a cloud language model, a set of Python skills, and speech input/output. Ask in plain language; RAGVA can call a mapped tool, show the response, and speak it back.
 
-> **Prototype status:** This repository description is based on the supplied `CONTEXT.md` snapshot (2026-11-24), not a fresh source-code checkout. The supplied working prototype is a **Windows desktop app**. A browser extension and a standalone web client are **future product directions**, not implemented features in that snapshot.
+> **Prototype status:** This document began as an architecture review of a `CONTEXT.md` snapshot (2026-11-24) and has been updated to match the source in this repository. The prototype is a **Windows desktop app**; a browser extension and a standalone web client are **future product directions**, not implemented features.
 
 ---
 
@@ -54,7 +54,7 @@ The phone-control path is separate: `phone_server.py` accepts a LAN HTTP request
 | `audio_io.py` | Microphone capture/transcription and text-to-speech |
 | `gui_web.py` | pywebview window, JavaScript bridge and Python-to-HUD updates |
 | `hud.html` | HUD markup, CSS, Three.js scene, state styling, input and log UI |
-| `config.py` | Model, voice, flags and other settings; inspect carefully for credentials |
+| `config.py` | Model, voice, flags and other settings; secrets are read from environment variables |
 | `phone_server.py` | Optional Flask LAN endpoint for phone-originated commands |
 | `launcher.py` | Optional background launch-phrase listener |
 
@@ -101,11 +101,11 @@ The browser-extension and web-app directions should carry the same state palette
 
 The supplied snapshot was tested on Windows with Python 3.14.7. It reports Python 3.10+ in its setup notes; GUI, audio and native dependencies may behave differently across Python and Windows versions. WebView2 Runtime and a working microphone/speaker are needed for the corresponding features.
 
-1. Obtain the actual RAGVA source files. The provided context document describes them, but does not itself include the implementation files.
+1. Clone this repository to your Windows machine.
 2. Create and activate a virtual environment.
-3. Inspect and install the project's dependencies. The supplied `requirements.txt` is documented as **incomplete**; packages called out in the snapshot include `groq`, `flask`, `pywebview`, `SpeechRecognition`, `sounddevice`, `numpy`, `edge-tts`, `playsound`, `psutil`, `pyttsx3`, `pywin32`, `requests`, and `ddgs`. Install only what the features you intend to use require.
+3. Install the dependencies: `pip install -r requirements.txt`. Install only the optional integrations you intend to use.
 4. Install Microsoft Edge WebView2 Runtime if it is not already present.
-5. Configure a valid Groq API credential. The supplied snapshot reports a key hard-coded in `config.py`; **do not publish, reuse, or commit that key**. Revoke/rotate an exposed credential and change the implementation to load secrets from an environment variable or a secret store before running or sharing the project.
+5. Set a valid Groq API key in the environment, for example `$env:GROQ_API_KEY = "your-key"` in PowerShell. `config.py` reads it from the environment; **never commit a key to source control**. Revoke/rotate any key that was previously exposed.
 6. From the source directory, start the application:
 
    ```powershell
@@ -116,14 +116,14 @@ Optional: `python launcher.py` starts the separate wake-phrase listener. Its lau
 
 ### Configuration notes
 
-Configuration is described in `config.py`. Important settings include `GROQ_MODEL`, `ASSISTANT_NAME`, `TTS_ENGINE`, Edge TTS voice/rate/pitch, speech thresholds, `CONTINUOUS_LISTEN`, `REQUIRE_WAKE_WORD`, history length, and the phone-server port. The context snapshot records these defaults and caveats:
+Configuration is described in `config.py`. Important settings include `GROQ_MODEL`, `ASSISTANT_NAME`, `TTS_ENGINE`, Edge TTS voice/rate/pitch, speech thresholds, `CONTINUOUS_LISTEN`, `REQUIRE_WAKE_WORD`, history length, and the phone-server host/port. Current defaults and caveats:
 
 - Model: `openai/gpt-oss-20b`; all reasoning is sent to Groq.
 - TTS: `edge-tts` with voice `en-GB-RyanNeural`; `pyttsx3` is an alternate local synthesis engine.
 - Transcription: Google Web Speech; the configured Whisper model size is unused in the described implementation.
 - Continuous listening is off by default; push-to-talk and typed input are the default interaction modes.
 - `WAKE_WORD` (in-app loop) and `LAUNCH_PHRASE` (separate launcher) are distinct settings.
-- The phone server is enabled by default in the described config; disable it unless needed and secured.
+- The phone server is disabled by default. Enable it with `RAGVA_ENABLE_PHONE_SERVER=1` only after adding authentication and network controls; it binds to `127.0.0.1` by default.
 
 ## Integrations and data handling
 
@@ -133,7 +133,7 @@ Configuration is described in `config.py`. Important settings include `GROQ_MODE
 | Google Web Speech | Voice transcription | Captured audio is sent to Google's speech service |
 | Edge TTS | Default spoken replies | Reply text is sent to Microsoft's service |
 | Open-Meteo | Weather lookup | Location query sent over the network; no key documented |
-| DuckDuckGo search (`ddgs`) | Web search | Search query sent to the search service; package missing in supplied environment |
+| DuckDuckGo search (`ddgs`) | Web search | Search query sent to the search service; requires `ddgs` to be installed |
 | Arbitrary HTTP (`requests`) | Web page fetch | Requested page contacted; returned text enters the model's tool context |
 | Outlook COM | Calendar access | Runs locally through installed Outlook; appointments are read or created |
 | Windows APIs / filesystem | Launch, lock, media, files, notes | Acts with the current user's Windows permissions |
@@ -143,24 +143,24 @@ Conversation history is kept in memory and trimmed by message count in the suppl
 
 ## Security: read before use
 
-The context snapshot identifies important risks in the supplied prototype:
+The architecture review identifies important risks in this prototype:
 
-1. **Credential exposure:** `config.py` reportedly contains a literal Groq API key. Revoke/rotate any exposed key immediately; do not include secrets in source control or in this README.
+1. **Credential handling:** `config.py` reads `GROQ_API_KEY` from the environment and contains no secret. Revoke/rotate any key that was previously exposed, and keep secrets out of source control.
 2. **Arbitrary command execution:** `run_command` uses `subprocess.run(..., shell=True)` on model-supplied text. This can execute commands with the user's privileges. Disable it until replaced with a strict allowlist and explicit user confirmation.
-3. **Unauthenticated LAN endpoint:** Flask binds to `0.0.0.0:5005` without authentication, TLS or rate limiting in the described implementation. A reachable client may be able to invoke powerful tools. Disable the endpoint, bind locally, or add authentication and network controls before use.
+3. **Unauthenticated LAN endpoint:** the optional Flask endpoint has no authentication, TLS or rate limiting. It is disabled by default and binds to `127.0.0.1`; do not expose it to a LAN until authentication and network controls are added.
 4. **Prompt injection:** fetched web content can influence the model's tool context. A prompt instruction is not a security boundary. Keep untrusted content away from privileged actions and require confirmation.
 5. **Broad local access:** file tools and Outlook COM run in the user's security context. Constrain accessible paths and actions.
 6. **Unsafe HUD rendering:** the snapshot reports model text inserted through `innerHTML` without escaping. Render untrusted content as text (`textContent`) and sanitize any intentional markup.
 7. **Privacy disclosure:** prompts and transcripts go to cloud services; speech is sent to Google; default speech synthesis uses Microsoft's service. Disclose this and provide an explicit user choice before recording or transmission.
 
-**Do not expose RAGVA to a network or use it with sensitive data until these issues have been addressed and tested.** The snapshot is a code-context summary, not a security audit or a certification.
+**Do not expose RAGVA to a network or use it with sensitive data until these issues have been addressed and tested.** This document is not a security audit or a certification.
 
 ## Limitations documented in the supplied snapshot
 
 - Windows-only native actions and pywebview shell; no browser extension or web client yet.
 - No local language model or offline reasoning path.
-- `ddgs` missing in the described environment, so `web_search` fails until the dependency is installed.
-- `requirements.txt` is incomplete and contains at least some unused dependencies.
+- `web_search` fails if the `ddgs` dependency is not installed.
+- No automated dependency-pinning or vulnerability scan is configured.
 - `listen_once(timeout=...)` accepts but does not honor its `timeout` argument; phrase length is governed by the phrase cap.
 - A history trim can split an assistant tool-call record from its tool results.
 - HUD settings controls are described as decorative/unwired; one voice-simulation hint points to an undefined function.

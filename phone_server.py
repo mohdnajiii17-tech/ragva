@@ -44,12 +44,12 @@ def command():
     return jsonify({"reply": reply})
 
 
-def run_server(host="0.0.0.0", port=5005):
+def run_server(host="127.0.0.1", port=5005):
     print(f"\033[93m[phone server running on port {port} - find your PC's IP with 'ipconfig']\033[0m")
     app.run(host=host, port=port, debug=False, use_reloader=False)
 
 
-def start_in_background(port=5005):
-    t = threading.Thread(target=run_server, kwargs={"port": port}, daemon=True)
+def start_in_background(port=5005, host="127.0.0.1"):
+    t = threading.Thread(target=run_server, kwargs={"host": host, "port": port}, daemon=True)
     t.start()
     return t

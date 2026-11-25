@@ -10,6 +10,11 @@ from groq import Groq
 import config
 from skills import TOOLS, execute_tool
 
+if not config.GROQ_API_KEY:
+    raise RuntimeError(
+        "GROQ_API_KEY is not set. Export it before starting RAGVA (see README.md)."
+    )
+
 _client = Groq(api_key=config.GROQ_API_KEY)
 _history = []  # list of {"role": ..., "content": ..., ...}
 _lock = threading.Lock()  # guards _history since voice/typed/phone commands can now arrive concurrently
